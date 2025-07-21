@@ -4,19 +4,24 @@ import Game from '../pages/Game';
 import { GameProvider } from '../context/GameContext';
 import { SocketProvider } from '../provider/SocketProvider';
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <Home />,
+    },
+    {
+      path: '/game/:id',
+      element: (
+        <SocketProvider>
+          <GameProvider>
+            <Game />
+          </GameProvider>
+        </SocketProvider>
+      ),
+    },
+  ],
   {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/game/:id',
-    element: (
-      <SocketProvider>
-        <GameProvider>
-          <Game />
-        </GameProvider>
-      </SocketProvider>
-    ),
-  },
-]);
+    basename: '/robson',
+  }
+);
