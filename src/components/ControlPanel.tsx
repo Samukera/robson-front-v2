@@ -2,7 +2,6 @@ export default function ControlPanel({
   vote,
   restart,
   show,
-  currentVote,
 }: any) {
   const cards = ["1", "2", "3", "5", "8", "13", "21", "☕", "?"];
 

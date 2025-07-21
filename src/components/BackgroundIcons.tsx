@@ -1,7 +1,7 @@
 export default function BackgroundIcons() {
   const icons = ["♠️", "♥️", "♣️", "♦️", "🎰", "🎲", "🃏"];
 
-  const positions = Array.from({ length: 20 }, (_, i) => ({
+  const positions = Array.from({ length: 20 }, () => ({
     top: Math.random() * 100,
     left: Math.random() * 100,
     icon: icons[Math.floor(Math.random() * icons.length)],

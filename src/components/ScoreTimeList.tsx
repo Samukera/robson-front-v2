@@ -7,7 +7,7 @@ interface ScoreTimeItem {
   time: string;
 }
 
-export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
+export default function ScoreTimeList({ }: { onReset: () => void }) {
   const [items, setItems] = useState<ScoreTimeItem[]>([
     { point: '0', time: '1h' },
     { point: '1', time: '2h' },
