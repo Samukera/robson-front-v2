@@ -7,7 +7,7 @@ export default function RobsonTitle({ card }: RobsonTitleProps) {
     <div className="flex flex-col items-center mt-4 sm:mt-6 md:mt-8">
       {/* Título em arco estilizado */}
       <img
-        src="/robsonTitle.png"
+        src="/robson/robsonTitle.png"
         alt="ROBSON"
         className="w-48 sm:w-60 md:w-72 h-auto drop-shadow-[0_2px_8px_rgba(255,255,0,0.4)]"
       />

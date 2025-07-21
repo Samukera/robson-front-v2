@@ -3,7 +3,7 @@ export default function CardSVG({ value, hidden = false }: { value?: string; hid
     <div className="w-full h-full object-cover rounded-md border shadow-inner bg-white relative flex items-center justify-center text-lg sm:text-xl font-bold">
       {hidden ? (
         <img
-          src="/back-card.svg"
+          src="/robson/back-card.svg"
           alt="Carta Virada"
           className="w-full h-full object-cover rounded-md"
         />
