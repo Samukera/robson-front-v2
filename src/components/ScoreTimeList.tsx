@@ -115,38 +115,48 @@ export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // debounce do envio pro servidor
-  const debounce = useRef<number | null>(null);
-  const emitWithDebounce = (next: ScoreTimeItem[]) => {
-    if (!socket) return;
-    if (debounce.current) window.clearTimeout(debounce.current);
-    debounce.current = window.setTimeout(() => {
-      lastSerializedRef.current = JSON.stringify(next);
-      socket.emit('scoreTime:set', next);
-    }, 200);
-  };
+  // --- debounce SEM stale closure (sempre usa o socket atual) ---
+  const debTimer = useRef<number | null>(null);
+  const emitWithDebounce = useRef<(next: ScoreTimeItem[]) => void>(() => { });
 
+  useEffect(() => {
+    // toda vez que o socket muda (conecta/reconecta), reconfigura o emissor
+    emitWithDebounce.current = (next: ScoreTimeItem[]) => {
+      if (!socket) return;
+      if (debTimer.current) window.clearTimeout(debTimer.current);
+      debTimer.current = window.setTimeout(() => {
+        lastSerializedRef.current = JSON.stringify(next);
+        socket.emit('scoreTime:set', next);
+      }, 200);
+    };
+    return () => {
+      if (debTimer.current) window.clearTimeout(debTimer.current);
+      debTimer.current = null;
+    };
+  }, [socket]);
+
+  // --- handlers podem continuar estáveis; usam .current ---
   const handleChange = useCallback((index: number, field: 'point' | 'time', value: string) => {
-    setItems((prev) => {
+    setItems(prev => {
       const next = prev.map((it, i) => (i === index ? { ...it, [field]: value } : it));
-      emitWithDebounce(next);
+      emitWithDebounce.current(next);
       return next;
     });
   }, []);
 
   const handleAdd = useCallback(() => {
-    setItems((prev) => {
+    setItems(prev => {
       const next = [...prev, { point: '', time: '' }];
-      emitWithDebounce(next);
+      emitWithDebounce.current(next);
       return next;
     });
   }, []);
 
   const handleRemove = useCallback((index: number) => {
-    setItems((prev) => {
+    setItems(prev => {
       if (prev.length <= 1) return prev;
       const next = prev.filter((_, i) => i !== index);
-      emitWithDebounce(next);
+      emitWithDebounce.current(next);
       return next;
     });
   }, []);
