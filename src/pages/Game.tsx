@@ -279,7 +279,7 @@ export default function Game() {
                       <CardSVG value={player.vote} hidden={!showVotes || countdown !== 0} />
                     </div>
                     <img
-                      src="/robson/chip1.svg"
+                      src="/chip1.svg"
                       alt="Ficha"
                       className="absolute -bottom-3 -right-3 w-6 h-6"
                     />

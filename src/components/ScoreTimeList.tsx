@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// ScoreTimeList.tsx
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSocketContext } from '../provider/SocketProvider';
 import { FiChevronRight } from 'react-icons/fi';
 
@@ -7,45 +8,29 @@ interface ScoreTimeItem {
   time: string;
 }
 
-export default function ScoreTimeList({ }: { onReset: () => void }) {
-  const [items, setItems] = useState<ScoreTimeItem[]>([
-    { point: '0', time: '1h' },
-    { point: '1', time: '2h' },
-  ]);
-
-  const [isMobile, setIsMobile] = useState(false);
-  const [showDrawer, setShowDrawer] = useState(false);
-
-  const socket = useSocketContext();
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const handleChange = (index: number, field: 'point' | 'time', value: string) => {
-    const newItems = [...items];
-    newItems[index][field] = value;
-    setItems(newItems);
-  };
-
-  const handleAdd = () => {
-    setItems([...items, { point: '', time: '' }]);
-  };
-
-  const handleRemove = (index: number) => {
-    if (items.length === 1) return;
-    setItems(items.filter((_, i) => i !== index));
-  };
-
-  const List = () => (
+const ScoreTimePanel = memo(function ScoreTimePanel({
+  items,
+  isMobile,
+  onCloseDrawer,
+  onChange,
+  onAdd,
+  onRemove,
+  onReset,
+}: {
+  items: ScoreTimeItem[];
+  isMobile: boolean;
+  onCloseDrawer: () => void;
+  onChange: (index: number, field: 'point' | 'time', value: string) => void;
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  onReset: () => void;
+}) {
+  return (
     <div className="w-full sm:w-[250px] bg-[#2f3e5d] rounded-xl shadow-lg p-3 sm:p-4 border border-yellow-400 text-white text-xs sm:text-sm h-full sm:h-auto">
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-yellow-300 font-semibold text-sm sm:text-base">Pontuação x Tempo</h3>
         {isMobile && (
-          <button onClick={() => setShowDrawer(false)} className="text-white text-lg">
+          <button onClick={onCloseDrawer} className="text-white text-lg">
             <FiChevronRight />
           </button>
         )}
@@ -57,18 +42,18 @@ export default function ScoreTimeList({ }: { onReset: () => void }) {
             <input
               type="text"
               value={item.point}
-              onChange={(e) => handleChange(index, 'point', e.target.value)}
+              onChange={(e) => onChange(index, 'point', e.target.value)}
               className="bg-[#1f2e45] text-white rounded px-2 py-1 w-[40%] border border-gray-600"
             />
             =
             <input
               type="text"
               value={item.time}
-              onChange={(e) => handleChange(index, 'time', e.target.value)}
-              className="bg-[#1f2e45] text-white rounded px-2 py-1 w-[45%] border border-gray-600"
+              onChange={(e) => onChange(index, 'time', e.target.value)}
+              className="bg-[#1f2e5d] text-white rounded px-2 py-1 w-[45%] border border-gray-600"
             />
             <button
-              onClick={() => handleRemove(index)}
+              onClick={() => onRemove(index)}
               className="text-yellow-300 hover:text-red-400 text-sm ml-1"
               title="Remover"
             >
@@ -78,21 +63,93 @@ export default function ScoreTimeList({ }: { onReset: () => void }) {
         ))}
       </div>
 
-      <button
-        onClick={handleAdd}
-        className="mt-2 text-yellow-200 hover:text-yellow-100 underline text-xs sm:text-sm"
-      >
+      <button onClick={onAdd} className="mt-2 text-yellow-200 hover:text-yellow-100 underline text-xs sm:text-sm">
         + Adicionar linha
       </button>
 
       <button
-        onClick={() => socket?.emit("resetCurrent")}
-        className="mt-3 bg-yellow-700 hover:bg-yellow-600 w-full py-1 rounded text-xs sm:text-sm text-white font-semibold shadow"
+        onClick={onReset}
+        className="mt-3 bg-yellow-600 hover:bg-yellow-500 w-full py-1 rounded text-xs sm:text-sm text-white font-semibold shadow"
       >
         Resetar Rodada
       </button>
     </div>
   );
+});
+
+export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
+  const socket = useSocketContext();
+
+  const [items, setItems] = useState<ScoreTimeItem[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+
+  // guarda última versão aplicada pra evitar reescrever desnecessariamente (eco do servidor)
+  const lastSerializedRef = useRef<string>('');
+
+  // receber do servidor
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleServerList = (list: ScoreTimeItem[]) => {
+      const serialized = JSON.stringify(list ?? []);
+      if (serialized !== lastSerializedRef.current) {
+        lastSerializedRef.current = serialized;
+        setItems(list ?? []);
+      }
+    };
+
+    socket.on('scoreTime', handleServerList);
+    socket.emit('scoreTime:get');
+
+    return () => {
+      socket.off('scoreTime', handleServerList);
+    };
+  }, [socket]);
+
+  // detectar mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // debounce do envio pro servidor
+  const debounce = useRef<number | null>(null);
+  const emitWithDebounce = (next: ScoreTimeItem[]) => {
+    if (!socket) return;
+    if (debounce.current) window.clearTimeout(debounce.current);
+    debounce.current = window.setTimeout(() => {
+      lastSerializedRef.current = JSON.stringify(next);
+      socket.emit('scoreTime:set', next);
+    }, 200);
+  };
+
+  const handleChange = useCallback((index: number, field: 'point' | 'time', value: string) => {
+    setItems((prev) => {
+      const next = prev.map((it, i) => (i === index ? { ...it, [field]: value } : it));
+      emitWithDebounce(next);
+      return next;
+    });
+  }, []);
+
+  const handleAdd = useCallback(() => {
+    setItems((prev) => {
+      const next = [...prev, { point: '', time: '' }];
+      emitWithDebounce(next);
+      return next;
+    });
+  }, []);
+
+  const handleRemove = useCallback((index: number) => {
+    setItems((prev) => {
+      if (prev.length <= 1) return prev;
+      const next = prev.filter((_, i) => i !== index);
+      emitWithDebounce(next);
+      return next;
+    });
+  }, []);
 
   return (
     <>
@@ -101,7 +158,15 @@ export default function ScoreTimeList({ }: { onReset: () => void }) {
           {showDrawer && (
             <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
               <div className="w-[90%] max-w-xs h-full bg-[#1c1c1c] p-4">
-                <List />
+                <ScoreTimePanel
+                  items={items}
+                  isMobile
+                  onCloseDrawer={() => setShowDrawer(false)}
+                  onChange={handleChange}
+                  onAdd={handleAdd}
+                  onRemove={handleRemove}
+                  onReset={onReset}
+                />
               </div>
             </div>
           )}
@@ -117,7 +182,15 @@ export default function ScoreTimeList({ }: { onReset: () => void }) {
         </>
       ) : (
         <div className="absolute bottom-5 right-5 z-50">
-          <List />
+          <ScoreTimePanel
+            items={items}
+            isMobile={false}
+            onCloseDrawer={() => { }}
+            onChange={handleChange}
+            onAdd={handleAdd}
+            onRemove={handleRemove}
+            onReset={onReset}
+          />
         </div>
       )}
     </>

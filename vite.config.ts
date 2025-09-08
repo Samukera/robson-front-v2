@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react-swc'
 
 
 export default defineConfig({
-  base: '/robson/',
+  base: '/',
   plugins: [react()],
 });
