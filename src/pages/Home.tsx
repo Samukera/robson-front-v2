@@ -4,13 +4,14 @@ import PokerChipButton from "../components/PokerChipButton";
 import BackgroundIcons from "../components/BackgroundIcons";
 import InfoModal from "../components/InfoModal";
 import { IoHelpSharp } from "react-icons/io5";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleCreateRoom = () => {
-    navigate("/game/" + crypto.randomUUID());
+    navigate('/game/' + uuidv4());
   };
 
   return (
