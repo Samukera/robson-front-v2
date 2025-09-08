@@ -5,17 +5,17 @@ import { FiChevronLeft } from "react-icons/fi";
 import { v4 as uuidv4 } from "uuid";
 import { useGame } from "../context/GameContext";
 import { useSocketContext } from "../provider/SocketProvider";
-
-type Ticket = {
-  id: string;
-  name: string;
-  votingOn: boolean;
-  average: string;
-  closest: string;
-  score: string;
-  voted: boolean;
-  done?: boolean;
-};
+import type { Ticket } from '../types';
+// type Ticket = {
+//   id: string;
+//   name: string;
+//   votingOn: boolean;
+//   average: string;
+//   closest: string;
+//   score: string;
+//   voted: boolean;
+//   done?: boolean;
+// };
 
 type TicketListProps = {
   isMobile: boolean;
