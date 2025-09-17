@@ -10,8 +10,8 @@ interface IconPlanningTextProps {
 }
 
 export const IconPlanningText: React.FC<IconPlanningTextProps> = ({
-  fill = 'white',
-  opacity = 0.08,
+  fill = '#FFD700', // padrão dourado
+  opacity = 0.15,
   width = '100%',
   height = 100,
   className = '',
@@ -24,18 +24,30 @@ export const IconPlanningText: React.FC<IconPlanningTextProps> = ({
     height={height}
     className={className}
   >
+    {/* Gradiente dourado */}
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#FFD700" />
+        <stop offset="50%" stopColor="#FFF5A5" />
+        <stop offset="100%" stopColor="#FFA500" />
+      </linearGradient>
+    </defs>
+
     <text
       x="50%"
       y="50%"
       dominantBaseline="middle"
       textAnchor="middle"
-      fontSize="80"
-      fill={fill}
+      fontSize="72"
+      fill="url(#goldGradient)"
       opacity={opacity}
-      fontWeight="bold"
+      fontWeight="900"
       fontStyle="italic"
-      letterSpacing="20"
-      fontFamily="Arial, sans-serif"
+      letterSpacing="28"
+      fontFamily="'Orbitron', 'Rajdhani', 'Arial Black', sans-serif"
+      stroke="#000"
+      strokeWidth="2"
+      paintOrder="stroke"
     >
       {texting}
     </text>

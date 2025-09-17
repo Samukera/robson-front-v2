@@ -1,7 +1,7 @@
 // ScoreTimeList.tsx
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSocketContext } from '../provider/SocketProvider';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiChevronLeft } from 'react-icons/fi';
 
 interface ScoreTimeItem {
   point: string;
@@ -26,12 +26,18 @@ const ScoreTimePanel = memo(function ScoreTimePanel({
   onReset: () => void;
 }) {
   return (
-    <div className="w-full sm:w-[250px] bg-[#2f3e5d] rounded-xl shadow-lg p-3 sm:p-4 border border-yellow-400 text-white text-xs sm:text-sm h-full sm:h-auto">
+    <div
+      className={`
+        bg-[#2f3e5d] rounded-xl shadow-lg p-3 sm:p-4 border border-yellow-400 text-white text-xs sm:text-sm
+        ${isMobile ? "w-full h-full overflow-hidden" : "w-full sm:w-[250px] h-auto"}
+      `}
+    >
+
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-yellow-300 font-semibold text-sm sm:text-base">Pontuação x Tempo</h3>
         {isMobile && (
           <button onClick={onCloseDrawer} className="text-white text-lg">
-            <FiChevronRight />
+            <FiChevronLeft />
           </button>
         )}
       </div>
@@ -67,12 +73,6 @@ const ScoreTimePanel = memo(function ScoreTimePanel({
         + Adicionar linha
       </button>
 
-      <button
-        onClick={onReset}
-        className="mt-3 bg-yellow-600 hover:bg-yellow-500 w-full py-1 rounded text-xs sm:text-sm text-white font-semibold shadow"
-      >
-        Resetar Rodada
-      </button>
     </div>
   );
 });
@@ -109,11 +109,16 @@ export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
 
   // detectar mobile
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 1024 || height < 950);
+    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
 
   // --- debounce SEM stale closure (sempre usa o socket atual) ---
   const debTimer = useRef<number | null>(null);
@@ -167,7 +172,7 @@ export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
         <>
           {showDrawer && (
             <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-              <div className="w-[90%] max-w-xs h-full bg-[#1c1c1c] p-4">
+              <div className="w-full max-w-[320px] h-full bg-[#1c1c1c] p-4 overflow-hidden">
                 <ScoreTimePanel
                   items={items}
                   isMobile
@@ -186,7 +191,7 @@ export default function ScoreTimeList({ onReset }: { onReset: () => void }) {
               onClick={() => setShowDrawer(true)}
               className="fixed bottom-4 right-4 z-40 bg-yellow-400 text-black font-bold px-4 py-2 rounded-full shadow-md"
             >
-              ⏱ Score
+              ⏱ Legenda
             </button>
           )}
         </>

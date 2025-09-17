@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import CardSVG from '../components/CardSVG';
 import { useGame } from '../context/GameContext';
 import classNames from 'classnames';
@@ -44,6 +45,7 @@ export default function Game() {
     setName,
     self,
     sendEmoji,
+    updateGameFormat,
   } = useGame();
 
   const [nickname, setNickname] = useState(() => localStorage.getItem('name') || '');
@@ -55,6 +57,11 @@ export default function Game() {
   const [activeEmojis, setActiveEmojis] = useState<ActiveEmoji[]>([]);
   const tableRef = useRef<HTMLDivElement>(null);
   const hasVotes = players.some(p => p.vote !== null && p.vote !== undefined);
+  const location = useLocation() as { state?: { gameType?: { name: string; values: (number | string)[] } } };
+  const selectedFromHome = location.state?.gameType;
+  // evita emitir duas vezes
+  const sentOnceRef = useRef(false);
+
 
 
   const animateEmoji = (fromId: string, toId: string, emoji: string) => {
@@ -147,13 +154,44 @@ export default function Game() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!socket || !selectedFromHome || sentOnceRef.current) return;
+
+    const send = () => {
+      updateGameFormat({
+        ...selectedFromHome,
+        values: selectedFromHome.values.map(String), // garante serialização
+      });
+      sentOnceRef.current = true;
+    };
+
+    if (socket.connected) send();
+
+    socket.on('connect', send);
+
+    // ✅ cleanup precisa retornar uma função que retorna void
+    return () => {
+      if (!socket) return;
+      socket.off('connect', send);
+    };
+  }, [socket, selectedFromHome, updateGameFormat]);
+
+
   return (
     <div className="min-h-screen text-white flex items-center justify-center relative overflow-hidden bg-[#1f2c45] bg-[radial-gradient(ellipse_at_center,_#2f3f65_0%,_#1f2c45_80%)]"
 
     >
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-50">
-        <RobsonTitle card={votingOnName} />
+      {/* Título ROBSON — menor em telas menores */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 z-30 pointer-events-none
+             top-1 sm:top-2 md:top-3 lg:top-4"
+      >
+        <div className="origin-top 
+                  scale-[0.55] sm:scale-[0.65] md:scale-[0.75] lg:scale-[0.90] xl:scale-100">
+          <RobsonTitle card={votingOnName} />
+        </div>
       </div>
+
       {/* 🔗 Header com tickets à esquerda e botões à direita */}
       <div className="absolute top-5 w-full px-4 flex justify-between items-start z-50">
         {/* 🧾 Tarefas (lado esquerdo) */}
@@ -299,15 +337,17 @@ export default function Game() {
             </div>
           ) : (
             // ⬇️ Aqui vai o botão com anel animado
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+            <div className="relative flex flex-col items-center justify-center">
               {hasVotes && (
                 <div className="absolute inset-0 rounded-full border-4 border-yellow-300 animate-ping opacity-50 pointer-events-none" />
               )}
+
+              {/* Botão Revelar */}
               <button
                 onClick={show}
                 disabled={showVotes || !hasVotes}
                 className={classNames(
-                  "w-full h-full rounded-full relative flex items-center justify-center font-bold text-lg transition-all duration-300",
+                  "relative z-10 w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300",
                   "bg-gradient-to-br from-blue-600 to-blue-800 text-yellow-200",
                   "border-[6px] border-yellow-300 shadow-[0_0_30px_rgba(255,255,0,0.4)]",
                   "hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,0,0.6)]",
@@ -315,19 +355,24 @@ export default function Game() {
                 )}
               >
                 <span className="drop-shadow text-sm sm:text-base lg:text-xl tracking-wide">
-                  Revelar</span>
+                  Revelar
+                </span>
                 <div className="absolute inset-0 rounded-full bg-yellow-300 opacity-10 pointer-events-none blur-[8px]" />
               </button>
-              <IconPlanningText
-                fill="#F8C83F"
-                opacity={0.08}
-                width="100%"
-                texting={`PLANNING`}
-                height={130}
-                className="absolute top-[53%] left-1/2 transform -translate-x-1/2 pointer-events-none blur-[0.5px]"
-              />
 
+              {/* Texto PLANNING responsivo abaixo do botão */}
+              <div className="mt-3 sm:mt-4">
+                <IconPlanningText
+                  fill="#F8C83F"
+                  opacity={0.20}
+                  texting="PLANNING"
+                  className="pointer-events-none select-none blur-[0.5px]
+                 w-[120px] sm:w-[160px] md:w-[200px] lg:w-[260px] xl:w-[320px]"
+                  height={50}
+                />
+              </div>
             </div>
+
           )}
         </div>
 
@@ -346,7 +391,11 @@ export default function Game() {
           </div>
         )}
         {showVotes && countdown === 0 && (
-          <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 z-30 flex gap-4">
+          <div
+            className="absolute 
+    bottom-8 sm:bottom-10 md:bottom-12 lg:bottom-14 xl:bottom-16 
+    left-1/2 -translate-x-1/2 z-30 flex gap-4"
+          >
             <button
               onClick={() => socket?.emit("resetCurrent")}
               className="bg-yellow-600 hover:bg-yellow-500 text-white font-semibold py-1 px-3 sm:py-2 sm:px-4 text-xs sm:text-sm rounded"
@@ -364,21 +413,21 @@ export default function Game() {
 
       </div>
 
-      {/* texto SVG ao fundo */}
-      <IconPlanningText
-        fill="#F8C83F"
-        opacity={0.44}
-        width="100%"
-        texting='PLANNING'
-        height={130}
-        className="absolute top-[60%] left-1/2 transform -translate-x-1/2 pointer-events-none z-0 blur-[0.7px]"
-      />
       {/* Lista de pontos e tempos */}
       <ScoreTimeList onReset={restart} />
       {/* 🃏 Cartas para Votar */}
       {
         self?.role === 'player' && (
-          <div className="absolute bottom-44 left-1/2 -translate-x-1/2 w-full max-w-[700px] h-[160px] px-2">
+          <div
+            className="
+    absolute 
+    bottom-4 sm:bottom-8 md:bottom-12 lg:bottom-16 xl:bottom-20
+    left-1/2 -translate-x-1/2 
+    w-full max-w-[700px] px-2
+    flex justify-center gap-2
+    z-40
+  "
+          >
             {gameFormat?.values.map((card, index) => (
               <CardItem
                 key={card}

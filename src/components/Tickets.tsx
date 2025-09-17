@@ -42,7 +42,13 @@ const TicketList = memo(function TicketList({
   onSelect,
 }: TicketListProps) {
   return (
-    <div className="bg-white/10 backdrop-blur border border-yellow-400 rounded-xl p-4 shadow-lg w-full sm:w-80 text-white h-full sm:h-auto">
+    <div
+      className={`
+    bg-white/10 backdrop-blur border border-yellow-400 rounded-xl p-4 shadow-lg text-white
+    ${isMobile ? "w-full h-full overflow-hidden" : "w-full sm:w-80 h-auto"}
+  `}
+    >
+
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-base sm:text-lg font-semibold text-yellow-300">Cards</h2>
         <div className="flex items-center gap-2">
@@ -148,13 +154,18 @@ export default function Tickets() {
   }, [tickets]);
 
 
-  // Detecta telas pequenas
+  // Detecta telas médias/pequenas ou desktops com pouca altura
   useEffect(() => {
-    const checkScreen = () => setIsMobile(window.innerWidth < 637);
+    const checkScreen = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(width < 1440 || height < 950);
+    };
     checkScreen();
     window.addEventListener("resize", checkScreen);
     return () => window.removeEventListener("resize", checkScreen);
   }, []);
+
 
   const addTicket = useCallback(() => {
     if (!ticketName.trim()) return;
@@ -191,7 +202,7 @@ export default function Tickets() {
         <>
           {showDrawer && (
             <div className="fixed inset-0 bg-black/70 z-50 flex justify-end">
-              <div className="w-[90%] max-w-xs h-full bg-[#1c1c1c] p-4">
+              <div className="w-full max-w-[320px] h-full bg-[#1c1c1c] p-4 overflow-hidden">
                 <TicketList
                   isMobile
                   ticketName={ticketName}

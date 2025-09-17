@@ -64,7 +64,7 @@ export default function CardItem({ card, index, total, vote, currentVote, countd
       {/* Wrapper para ring visual estável */}
       <div
         className={classNames(
-          "w-14 h-20 sm:w-16 sm:h-24 pointer-events-none rounded-lg",
+          "w-10 h-16 sm:w-12 sm:h-18 md:w-14 md:h-20 lg:w-16 lg:h-24 pointer-events-none rounded-lg",
           {
             "ring-4 ring-yellow-400 z-20": currentVote === card,
           }
@@ -100,7 +100,7 @@ export default function CardItem({ card, index, total, vote, currentVote, countd
             damping: 20,
           }}
           className={classNames(
-            "cursor-pointer w-14 h-20 sm:w-16 sm:h-24 rounded-lg border-2 border-black shadow-md pointer-events-auto bg-white",
+            "cursor-pointer w-10 h-16 sm:w-12 sm:h-18 md:w-14 md:h-20 lg:w-16 lg:h-24 rounded-lg border-2 border-black shadow-md pointer-events-auto bg-white",
             {
               "opacity-50 cursor-not-allowed": countdown > 0,
             }

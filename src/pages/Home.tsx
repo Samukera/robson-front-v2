@@ -5,30 +5,42 @@ import BackgroundIcons from "../components/BackgroundIcons";
 import InfoModal from "../components/InfoModal";
 import { IoHelpSharp } from "react-icons/io5";
 import { v4 as uuidv4 } from 'uuid';
+import { GameTypePicker } from "../components/GameTypePicker";
+import type { GameType } from "../components/GameTypePicker";
 
 export default function Home() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedGameType, setSelectedGameType] = useState<GameType | null>(null);
 
   const handleCreateRoom = () => {
-    navigate('/game/' + uuidv4());
+    const roomId = uuidv4();
+    // manda o gameType via state para o /game/:id
+    navigate('/game/' + roomId, { state: { gameType: selectedGameType } });
   };
+
+  const canCreate = !!selectedGameType;
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#1a1c2e] bg-gradient-to-br from-[#1a1c2e] via-[#2b2f48] to-[#1a1c2e] overflow-hidden">
       <BackgroundIcons />
 
-      <div className="backdrop-blur-lg bg-white/5 rounded-2xl p-10 border border-white/10 shadow-xl flex flex-col items-center">
-        <h1 className="text-5xl font-extrabold text-white tracking-wide mb-4 drop-shadow-md">
+      <div className="backdrop-blur-lg bg-white/5 rounded-2xl p-8 md:p-10 border border-white/10 shadow-xl flex flex-col items-center gap-6 w-[95%] max-w-3xl">
+        <h1 className="text-5xl font-extrabold text-white tracking-wide drop-shadow-md text-center">
           Planeje com <span className="text-yellow-400 glow-text">Robson</span>
         </h1>
 
         <img
           src="https://d2a0gza273xfgz.cloudfront.net/35835/uploads/6e2cb9f8-93d4-43f5-ab16-436df4cf34fa_800_420.png"
-          className="w-80 mb-6 rounded-xl border-4 border-yellow-400 shadow-[0_0_20px_rgba(255,255,0,0.5)]"
+          className="w-80 mb-2 rounded-xl border-4 border-yellow-400 shadow-[0_0_20px_rgba(255,255,0,0.5)]"
         />
 
-        <PokerChipButton label="Criar Sala" onClick={handleCreateRoom} />
+        {/* NOVO: bloco de configs iniciais */}
+        <GameTypePicker onChange={setSelectedGameType} />
+
+        <div className="mt-4">
+          <PokerChipButton label="Criar Sala" onClick={handleCreateRoom} disabled={!canCreate} />
+        </div>
       </div>
 
       {/* Ícone de ajuda no canto */}
