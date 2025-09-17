@@ -15,7 +15,6 @@ const ScoreTimePanel = memo(function ScoreTimePanel({
   onChange,
   onAdd,
   onRemove,
-  onReset,
 }: {
   items: ScoreTimeItem[];
   isMobile: boolean;

@@ -10,7 +10,6 @@ interface IconPlanningTextProps {
 }
 
 export const IconPlanningText: React.FC<IconPlanningTextProps> = ({
-  fill = '#FFD700', // padrão dourado
   opacity = 0.15,
   width = '100%',
   height = 100,
