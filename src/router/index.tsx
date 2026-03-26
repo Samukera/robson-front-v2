@@ -1,8 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Home from '../pages/Home';
 import Game from '../pages/Game';
-import { GameProvider } from '../context/GameContext';
-import { SocketProvider } from '../provider/SocketProvider';
 
 export const router = createBrowserRouter(
   [
@@ -12,13 +10,7 @@ export const router = createBrowserRouter(
     },
     {
       path: '/game/:id',
-      element: (
-        <SocketProvider>
-          <GameProvider>
-            <Game />
-          </GameProvider>
-        </SocketProvider>
-      ),
+      element: <Game />,
     },
   ],
   {

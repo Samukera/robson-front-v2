@@ -1,53 +1,79 @@
-import { useState } from "react";
+import { useState } from 'react';
+import Modal from './Modal';
+import { useI18n } from '../context/I18nContext';
+
+type Role = 'player' | 'observer';
 
 interface NicknameModalProps {
-  onConfirm: (nickname: string, role: "player" | "observer") => void;
-  defaultNickname?: string;
-  defaultRole?: "player" | "observer";
+  isOpen: boolean;
+  onSubmit: (name: string, role: Role) => void;
 }
 
-export default function NicknameModal({ onConfirm, defaultNickname = "", defaultRole = "player" }: NicknameModalProps) {
-  const [nickname, setNickname] = useState(defaultNickname);
-  const [role, setRole] = useState<"player" | "observer">(() => defaultRole);
+export default function NicknameModal({ isOpen, onSubmit }: NicknameModalProps) {
+  const { t } = useI18n();
+  const [name, setName] = useState('');
+  const [role, setRole] = useState<Role>('player');
 
-  const handleConfirm = () => {
-    if (nickname.trim()) {
-      onConfirm(nickname.trim(), role);
-    }
+  const handleSubmit = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    onSubmit(trimmed, role);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-xs sm:max-w-md text-white">
-        <h2 className="text-lg sm:text-xl font-semibold text-center mb-6 drop-shadow-md">
-          Escolha seu nome
-        </h2>
+    <Modal isOpen={isOpen} onClose={() => {}} title={t('nickname.title')}>
+      <div className="space-y-4">
+        <p className="text-slate-300 text-sm">{t('nickname.description')}</p>
 
-        <input
-          className="bg-black/30 text-white border border-white/30 rounded-md px-3 sm:px-4 py-2 sm:py-3 w-full placeholder:text-white/60 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
-          placeholder="Seu nome"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleConfirm()}
-        />
+        <div className="space-y-2">
+          <label className="text-slate-300 text-xs uppercase tracking-wider">{t('nickname.name')}</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Seu nome"
+            className="w-full bg-slate-950/70 border border-slate-600/70 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400/90"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSubmit();
+            }}
+          />
+        </div>
 
-        <select
-          className="bg-black/30 text-white border border-white/30 rounded-md px-3 sm:px-4 py-2 sm:py-3 w-full text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
-          value={role}
-          onChange={(e) => setRole(e.target.value as "player" | "observer")}
-        >
-          <option value="player">Participante</option>
-          <option value="observer">Observador</option>
-        </select>
+        <div className="space-y-2">
+          <label className="text-slate-300 text-xs uppercase tracking-wider">Papel</label>
+
+          <label className="flex items-center gap-3 cursor-pointer rounded-lg border border-slate-700/70 bg-slate-900/45 px-3 py-2 hover:border-slate-500/80 transition-colors">
+            <input
+              type="radio"
+              name="role"
+              checked={role === 'player'}
+              onChange={() => setRole('player')}
+              className="w-4 h-4 text-amber-500 bg-slate-700 border-slate-600 focus:ring-amber-500"
+            />
+              <span className="text-white text-sm">{t('nickname.playerDesc')}</span>
+          </label>
+
+          <label className="flex items-center gap-3 cursor-pointer rounded-lg border border-slate-700/70 bg-slate-900/45 px-3 py-2 hover:border-slate-500/80 transition-colors">
+            <input
+              type="radio"
+              name="role"
+              checked={role === 'observer'}
+              onChange={() => setRole('observer')}
+              className="w-4 h-4 text-amber-500 bg-slate-700 border-slate-600 focus:ring-amber-500"
+            />
+              <span className="text-white text-sm">{t('nickname.observerDesc')}</span>
+          </label>
+        </div>
 
         <button
-          className="bg-green-500 hover:bg-green-400 text-black font-semibold px-3 sm:px-4 py-2 sm:py-3 rounded-md w-full text-sm sm:text-base transition-colors"
-          onClick={handleConfirm}
-          disabled={!nickname.trim()}
+          type="button"
+          onClick={handleSubmit}
+          disabled={!name.trim()}
+          className="w-full bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium border border-amber-200/70 disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Entrar
+          {t('common.enter')}
         </button>
       </div>
-    </div>
+    </Modal>
   );
 }
