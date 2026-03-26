@@ -2,10 +2,174 @@
 @tailwind components;
 @tailwind utilities;
 
-/* body {
-  background-color: #002b1e;
-  background-image: radial-gradient(circle, #004d3a 0%, #002b1e 80%);
-} */
+:root {
+  --bg-start: #020b2a;
+  --bg-mid: #051437;
+  --bg-end: #030f2c;
+  --header-bg: rgba(2, 6, 23, 0.86);
+  --header-border: rgba(71, 85, 105, 0.58);
+  --footer-start: rgba(2, 6, 23, 0.95);
+  --footer-mid: rgba(8, 27, 70, 0.95);
+  --footer-end: rgba(8, 27, 70, 0.82);
+  --footer-border: rgba(100, 116, 139, 0.68);
+  --surface-1: rgba(15, 23, 42, 0.8);
+  --surface-2: rgba(30, 41, 59, 0.85);
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #f59e0b;
+  --accent-soft: #fbbf24;
+  --table-ambient: radial-gradient(circle, rgba(16, 74, 174, 0.22) 0%, rgba(3, 11, 34, 0) 68%);
+  --table-surface-bg: radial-gradient(circle at 35% 28%, #1f3d72 0%, #162d56 35%, #101f3d 62%, #0b1730 100%);
+}
+
+.theme-lagoon {
+  --bg-start: #0a1825;
+  --bg-mid: #123248;
+  --bg-end: #10263d;
+  --accent: #f97316;
+  --accent-soft: #fb923c;
+}
+
+.theme-modern-minimal {
+  --bg-start: #0b1220;
+  --bg-mid: #131d33;
+  --bg-end: #0f172a;
+  --header-bg: rgba(8, 15, 28, 0.84);
+  --header-border: rgba(100, 116, 139, 0.42);
+  --footer-start: rgba(7, 13, 24, 0.95);
+  --footer-mid: rgba(14, 24, 42, 0.95);
+  --footer-end: rgba(20, 31, 50, 0.85);
+  --footer-border: rgba(100, 116, 139, 0.52);
+  --surface-1: rgba(30, 41, 59, 0.72);
+  --surface-2: rgba(30, 41, 59, 0.82);
+  --text-primary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --accent: #38bdf8;
+  --accent-soft: #7dd3fc;
+  --table-ambient: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(2, 6, 23, 0) 66%);
+  --table-surface-bg: radial-gradient(circle at 35% 28%, #334155 0%, #1e293b 38%, #111827 70%, #0b1120 100%);
+}
+
+.theme-poker-felt {
+  --bg-start: #042315;
+  --bg-mid: #0a3a23;
+  --bg-end: #062716;
+  --header-bg: rgba(7, 28, 18, 0.88);
+  --header-border: rgba(94, 234, 212, 0.28);
+  --footer-start: rgba(7, 28, 18, 0.94);
+  --footer-mid: rgba(10, 58, 35, 0.95);
+  --footer-end: rgba(11, 74, 43, 0.84);
+  --footer-border: rgba(94, 234, 212, 0.38);
+  --surface-1: rgba(12, 52, 32, 0.8);
+  --surface-2: rgba(13, 70, 42, 0.88);
+  --text-primary: #ecfdf5;
+  --text-muted: #a7f3d0;
+  --accent: #fbbf24;
+  --accent-soft: #fcd34d;
+  --table-ambient: radial-gradient(circle, rgba(74, 222, 128, 0.2) 0%, rgba(2, 15, 9, 0) 68%);
+  --table-surface-bg: radial-gradient(circle at 35% 28%, #1d6b3d 0%, #185a34 35%, #104427 65%, #0a2f1a 100%);
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-primary);
+  background: var(--bg-start);
+}
+
+.app-shell {
+  background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 48%, var(--bg-end) 100%);
+}
+
+.app-header-surface {
+  background: transparent;
+  /* ou var(--bg-start) */
+  border-bottom: none;
+  backdrop-filter: none;
+  /* opcional */
+}
+
+.app-footer-surface {
+  background: transparent;
+  /* ou var(--bg-end) */
+  border-top: none;
+  box-shadow: none;
+}
+
+.icon-button {
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  transition: all 180ms ease;
+}
+
+.icon-button:hover {
+  background: var(--surface-1);
+  border-color: var(--header-border);
+}
+
+.modal-surface {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%);
+  border: 1px solid rgba(100, 116, 139, 0.72);
+  box-shadow: 0 20px 50px rgba(2, 6, 23, 0.6);
+}
+
+.table-ambient {
+  background: var(--table-ambient);
+}
+
+.table-surface {
+  background: var(--table-surface-bg);
+  box-shadow: 0 28px 70px rgba(2, 6, 23, 0.65);
+}
+
+@keyframes enter-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes enter-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-enter-down {
+  animation: enter-down 260ms ease-out both;
+}
+
+.animate-enter-up {
+  animation: enter-up 340ms ease-out both;
+}
+
+.animate-enter-scale {
+  animation: enter-scale 220ms ease-out both;
+}
 
 @keyframes ping-slow {
   0% {
