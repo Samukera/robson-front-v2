@@ -66,8 +66,8 @@ export default function PokerTable() {
 
   const positions = useMemo(() => {
     const count = Math.max(players.length, 1);
-    const baseX = count > 14 ? 34 : count > 10 ? 36 : count > 7 ? 38 : 40;
-    const baseY = count > 14 ? 25 : count > 10 ? 27 : count > 7 ? 29 : 31;
+    const baseX = count > 14 ? 37 : count > 10 ? 39 : count > 7 ? 41 : 43;
+    const baseY = count > 14 ? 28 : count > 10 ? 30 : count > 7 ? 32 : 35;
 
     return players.map((_, index) => {
       const angle = (-90 + (360 / count) * index) * (Math.PI / 180);
@@ -75,8 +75,8 @@ export default function PokerTable() {
       const top = 50 + Math.sin(angle) * baseY;
 
       return {
-        left: Math.min(86, Math.max(14, left)),
-        top: Math.min(83, Math.max(17, top)),
+        left: Math.min(88, Math.max(12, left)),
+        top: Math.min(85, Math.max(15, top)),
       };
     });
   }, [players]);
@@ -97,16 +97,16 @@ export default function PokerTable() {
       <div ref={tableRef} className="relative w-full max-w-2xl aspect-[4/3] max-h-full animate-enter-scale">
         <div className="table-ambient absolute inset-6 sm:inset-10 rounded-full blur-xl pointer-events-none" />
 
-        <div className="absolute inset-0 table-surface border-[clamp(2px,1.5vw,6px)] border-slate-500/70 rounded-[50%] sm:rounded-[58%] shadow-[0_28px_70px_rgba(2,6,23,0.65)] flex items-center justify-center m-2 sm:m-4">
-          <div className="absolute inset-[15%] sm:inset-[20%] border border-slate-300/12 rounded-[50%] animate-pulse" />
-          <div className="absolute inset-[25%] sm:inset-[30%] border border-slate-300/8 rounded-[50%]" />
+        <div className="absolute inset-0 table-surface border-[clamp(2px,1.5vw,6px)] border-[var(--table-border)] rounded-[50%] sm:rounded-[58%] flex items-center justify-center m-2 sm:m-4">
+          <div className="absolute inset-[15%] sm:inset-[20%] border border-[var(--table-ring-1)] rounded-[50%] animate-pulse" />
+          <div className="absolute inset-[25%] sm:inset-[30%] border border-[var(--table-ring-2)] rounded-[50%]" />
         </div>
 
         {!showVotes && revealCountdown === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 z-30 flex items-center justify-center">
             <button
               onClick={show}
-              className="z-10 bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white font-bold py-2 px-4 sm:py-3 sm:px-6 lg:py-4 lg:px-8 rounded-full text-sm sm:text-base lg:text-lg shadow-[0_10px_24px_rgba(251,191,36,0.35)] transform hover:scale-105 active:scale-[1.02] transition-all duration-200 border border-amber-200/70"
+              className="ui-btn-primary font-bold py-2 px-4 sm:py-3 sm:px-6 lg:py-4 lg:px-8 rounded-full text-sm sm:text-base lg:text-lg active:scale-[1.02]"
             >
               {t('game.revealVotes')}
             </button>
@@ -115,28 +115,28 @@ export default function PokerTable() {
 
         {revealCountdown > 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center z-20 pointer-events-none">
-            <div className="text-slate-200 text-sm">{t('game.countdown')}</div>
-            <div className="text-amber-300 text-6xl font-black drop-shadow-lg">{revealCountdown}</div>
+            <div className="text-[var(--text-primary)] text-sm">{t('game.countdown')}</div>
+            <div className="text-[var(--accent)] text-6xl font-black drop-shadow-lg">{revealCountdown}</div>
           </div>
         )}
 
         {showVotes && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="bg-slate-800/90 backdrop-blur-sm rounded-xl px-4 sm:px-6 py-2 sm:py-4 mb-2 sm:mb-4">
-              <span className="text-slate-400 text-xs sm:text-sm">{t('game.result')}:</span>
-              <div className="text-amber-400 text-2xl sm:text-3xl font-bold">{closestValue ?? '?'}</div>
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center">
+            <div className="ui-panel backdrop-blur-sm rounded-xl px-4 sm:px-6 py-2 sm:py-4 mb-2 sm:mb-4">
+              <span className="text-[var(--text-muted)] text-xs sm:text-sm">{t('game.result')}:</span>
+              <div className="text-[var(--accent)] text-2xl sm:text-3xl font-bold">{closestValue ?? '?'}</div>
             </div>
 
             <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={restart}
-                className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                className="ui-btn-secondary px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium"
               >
                 {t('game.restart')}
               </button>
               <button
                 onClick={nextTicket}
-                className="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                className="ui-btn-primary px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium"
               >
                 {t('game.nextTask')}
               </button>
@@ -166,7 +166,7 @@ export default function PokerTable() {
               {isMenuOpen && (
                 <div
                   data-emoji-menu
-                  className={`absolute z-40 flex max-w-[150px] flex-wrap items-center justify-center gap-1 rounded-lg border border-slate-600/70 bg-slate-900/95 px-1.5 py-1 shadow-lg ${getMenuClass(menuPlacement)}`}
+                  className={`absolute z-40 ui-panel flex max-w-[150px] flex-wrap items-center justify-center gap-1 rounded-lg px-1.5 py-1 ${getMenuClass(menuPlacement)}`}
                 >
                   {EMOJIS.map((emoji) => (
                     <button
@@ -234,38 +234,38 @@ function PlayerCard({
   const placeInfoOutward = positionTop < 50;
 
   return (
-    <div className={`flex items-center gap-1 ${placeInfoOutward ? 'flex-col-reverse' : 'flex-col'}`}>
+    <div className={`flex items-center gap-1.5 sm:gap-1 ${placeInfoOutward ? 'flex-col-reverse' : 'flex-col'}`}>
       <button
         type="button"
         data-emoji-trigger
         title="Emoji"
         onClick={onToggleEmoji}
-        className={`w-[clamp(2rem,5vw,3rem)] h-[clamp(2rem,5vw,3rem)] rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-xs sm:text-base border border-amber-200/40 shadow-[0_6px_16px_rgba(245,158,11,0.35)] transition-all ${emojiActive ? 'ring-2 ring-amber-200/80 scale-105' : 'hover:scale-105'}`}
+        className={`w-[clamp(1.75rem,4.2vw,2.55rem)] h-[clamp(1.75rem,4.2vw,2.55rem)] sm:w-[clamp(2rem,5vw,3rem)] sm:h-[clamp(2rem,5vw,3rem)] rounded-full bg-gradient-to-br from-[var(--accent-soft)] to-[var(--accent)] flex items-center justify-center text-[var(--text-on-accent)] font-bold text-[10px] sm:text-base border border-[var(--surface-border)] shadow-[var(--floating-shadow-sm)] transition-all ${emojiActive ? 'ring-2 ring-[var(--accent-soft)] scale-105' : 'hover:scale-105 hover:brightness-105'}`}
       >
         {(player.name || '?').charAt(0).toUpperCase()}
       </button>
 
-      <div className="bg-slate-900/80 border border-slate-600/50 px-1.5 sm:px-2 py-0.5 rounded text-slate-100 text-[10px] sm:text-xs font-medium whitespace-nowrap">
+      <div className="ui-panel-muted px-1.5 sm:px-2 py-0.5 rounded text-[var(--text-primary)] text-[10px] sm:text-xs font-medium whitespace-nowrap">
         {player.name || 'Sem nome'}
       </div>
 
       {showVotes ? (
         shouldRenderRevealVote(player) ? (
-          <div className="bg-slate-700 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-amber-400 font-bold text-sm sm:text-lg">
+          <div className="ui-panel px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-[var(--accent)] font-bold text-sm sm:text-lg">
             {player.vote ?? '?'}
           </div>
         ) : null
       ) : (
         <div>
           {hasVoted ? (
-            <div className="w-4 sm:w-6 h-4 sm:h-6 rounded-full bg-green-500 flex items-center justify-center">
-              <svg className="w-2.5 sm:w-4 h-2.5 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-4 sm:w-6 h-4 sm:h-6 rounded-full bg-[var(--success-bg)] border border-[var(--accent-soft)] flex items-center justify-center">
+              <svg className="w-2.5 sm:w-4 h-2.5 sm:h-4 text-[var(--success-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
           ) : (
-            <div className="w-4 sm:w-6 h-4 sm:h-6 rounded-full bg-slate-600 flex items-center justify-center">
-              <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-slate-400" />
+            <div className="w-4 sm:w-6 h-4 sm:h-6 rounded-full bg-[var(--surface-2)] border border-[var(--surface-border)] flex items-center justify-center">
+              <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-[var(--text-muted)]" />
             </div>
           )}
         </div>

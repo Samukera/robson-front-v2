@@ -54,7 +54,7 @@ interface GameContextType {
   clearEmoji: (id: string) => void;
   setScoreTimeDraft: (items: ScoreTimeItem[]) => void;
   flushScoreTimeDraft: (items: ScoreTimeItem[]) => void;
-  addTask: () => void;
+  addTask: () => string;
   updateTaskName: (id: string, name: string) => void;
   removeTask: (id: string) => void;
   exportTasksCsv: () => void;
@@ -234,16 +234,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
       },
       flushScoreTimeDraft: (items) => emit('scoreTime:set', items),
       addTask: () => {
+        const id = crypto.randomUUID();
         const next = [
           ...tickets,
           {
-            id: crypto.randomUUID(),
-            name: 'Nova tarefa',
+            id,
+            name: '',
             roomId: self?.roomId || '',
             votingOn: false,
           },
         ];
         emit('ticket', next);
+        return id;
       },
       updateTaskName: (id, name) => {
         const next = tickets.map((item) => (item.id === id ? { ...item, name } : item));

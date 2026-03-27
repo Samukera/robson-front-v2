@@ -39,14 +39,14 @@ export default function SharingModal({ isOpen, onClose }: SharingModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={t('share.title')}>
       <div className="space-y-4">
-        <p className="text-slate-300 text-sm">
+        <p className="text-[var(--text-muted)] text-sm">
           {t('share.description')}
         </p>
 
-        <div className="flex flex-col items-center gap-2 bg-slate-900/45 border border-slate-700/70 rounded-xl py-3">
-          <span className="text-xs text-slate-300 uppercase tracking-wider">{t('share.qr')}</span>
-          <div className="bg-white p-2 rounded-lg">
-            <QRCode value={roomUrl} size={112} fgColor="#0f172a" bgColor="#ffffff" />
+        <div className="ui-panel flex flex-col items-center gap-2 rounded-xl py-3">
+          <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider">{t('share.qr')}</span>
+          <div className="bg-white p-2 rounded-lg floating-soft">
+            <QRCode value={roomUrl} size={112} fgColor="#333333" bgColor="#ffffff" />
           </div>
         </div>
 
@@ -56,20 +56,11 @@ export default function SharingModal({ isOpen, onClose }: SharingModalProps) {
             type="text"
             value={roomUrl}
             readOnly
-            className="
-              flex-1 bg-slate-950/70 border border-slate-600/70 rounded-lg
-              px-3 py-2 text-sm text-white placeholder:text-slate-500
-              focus:outline-none focus:border-amber-400/80
-            "
+            className="flex-1 ui-input rounded-lg px-3 py-2 text-sm"
           />
           <button
             onClick={copyToClipboard}
-            className="
-              bg-gradient-to-b from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500
-              text-white px-4 py-2 rounded-lg text-sm font-medium
-              border border-amber-200/70 shadow-[0_8px_18px_rgba(245,158,11,0.35)]
-              transition-all
-            "
+            className="ui-btn-primary px-4 py-2 rounded-lg text-sm font-medium"
           >
             {copied ? t('common.copied') : t('common.copy')}
           </button>
@@ -79,12 +70,7 @@ export default function SharingModal({ isOpen, onClose }: SharingModalProps) {
         {typeof navigator.share === 'function' && (
           <button
             onClick={shareNative}
-            className="
-              w-full bg-slate-700/90 hover:bg-slate-600
-              text-white px-4 py-2 rounded-lg text-sm font-medium
-              border border-slate-500/60
-              transition-all
-            "
+            className="ui-btn-secondary w-full px-4 py-2 rounded-lg text-sm font-medium"
           >
             {t('common.share')}
           </button>

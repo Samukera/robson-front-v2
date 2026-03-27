@@ -29,7 +29,7 @@ export default function TicketList({ onSelectTicket }: TicketListProps) {
 
   return (
     <div className="w-28 sm:w-36 lg:w-44 h-full flex flex-col">
-      <div className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wider mb-1 px-1">
+      <div className="text-[10px] sm:text-xs text-[var(--text-muted)] uppercase tracking-wider mb-1 px-1">
         Tickets
       </div>
       <div className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
@@ -45,8 +45,8 @@ export default function TicketList({ onSelectTicket }: TicketListProps) {
                   h-8 sm:h-10 px-2 sm:px-3 rounded-lg
                   transition-all duration-200
                   ${isActive
-                    ? 'bg-amber-600 text-white border-2 border-amber-400'
-                    : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:border-slate-600'
+                    ? 'ui-btn-primary text-[11px]'
+                    : 'ui-btn-secondary text-[11px]'
                   }
                 `}
               >
