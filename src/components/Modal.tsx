@@ -14,18 +14,18 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-enter-scale">
       {/* Overlay */}
       <div 
-        className="absolute inset-0 bg-[#020617]/70 backdrop-blur-[2px]" 
+        className="absolute inset-0 bg-[var(--overlay-bg)] backdrop-blur-[3px]" 
         onClick={onClose}
       />
       
       {/* Content */}
-      <div className="modal-surface relative rounded-xl w-full max-w-sm p-4">
+      <div className="modal-surface floating-soft relative rounded-xl w-full max-w-sm p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h2>
           <button 
             onClick={onClose}
-            className="p-1 text-slate-400 hover:text-white"
+            className="ui-btn-secondary p-1 rounded-md"
           >
             <FiX size={20} />
           </button>

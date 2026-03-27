@@ -35,38 +35,26 @@ export default function LegendaModal({ isOpen, onClose }: LegendaModalProps) {
     >
       <div className="space-y-2 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
         {scoreTimeDraft.map((mapping, index) => (
-          <div key={`${mapping.point}-${index}`} className="flex items-center gap-2 p-2 bg-slate-900/55 border border-slate-600/70 rounded-lg">
+          <div key={index} className="ui-panel-muted flex items-center gap-2 p-2 rounded-lg">
             <input
               type="text"
               value={mapping.point}
               onChange={(e) => handleChange(index, 'point', e.target.value)}
-              className="
-                w-12
-                bg-slate-950/70 border border-slate-600/70 
-                rounded px-2 py-1 
-                text-slate-300 text-sm
-                focus:outline-none focus:border-amber-400/90 focus:bg-slate-800
-              "
+              className="w-12 ui-input rounded px-2 py-1 text-sm"
               placeholder="pt"
             />
-            <span className="text-slate-400">=</span>
+            <span className="text-[var(--text-muted)]">=</span>
             <input
               type="text"
               value={mapping.time}
               onChange={(e) => handleChange(index, 'time', e.target.value)}
-              className="
-                flex-1
-                bg-slate-950/70 border border-slate-600/70 
-                rounded px-2 py-1 
-                text-slate-300 text-sm
-                focus:outline-none focus:border-amber-400/90 focus:bg-slate-800
-              "
+              className="flex-1 ui-input rounded px-2 py-1 text-sm"
               placeholder="ex: 2h, 1d, 1w"
             />
             <button
               type="button"
               onClick={() => removeScoreTime(index)}
-              className="text-slate-300 hover:text-red-300 px-2 py-1 rounded border border-slate-600/70 hover:border-red-400/50"
+              className="ui-btn-danger px-2 py-1 rounded"
               title="Remover linha"
             >
               -
@@ -77,7 +65,7 @@ export default function LegendaModal({ isOpen, onClose }: LegendaModalProps) {
         <button
           type="button"
           onClick={addScoreTime}
-          className="w-full text-sm text-slate-200 hover:text-white px-3 py-2 rounded-lg border border-slate-600/70 hover:border-slate-400 bg-slate-900/50"
+          className="ui-btn-secondary w-full text-sm px-3 py-2 rounded-lg"
         >
           {t('legend.addRow')}
         </button>

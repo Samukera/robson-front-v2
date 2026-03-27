@@ -1,5 +1,5 @@
 export default function TicketList() {
   return (
-    <div className="text-slate-500 text-xs">Tickets</div>
+    <div className="text-[var(--text-muted)] text-xs">Tickets</div>
   );
 }

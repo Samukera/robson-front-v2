@@ -9,16 +9,7 @@ import PokerTable from '../content/PokerTable';
 import VoteCards from '../footer/VoteCards';
 import { useGame } from '../../context/GameContext';
 import { useI18n } from '../../context/I18nContext';
-
-type ThemeName = 'default' | 'modern-minimal' | 'poker-felt' | 'lagoon';
-const THEME_STORAGE_KEY = 'robson:theme';
-
-function toTheme(theme: string): ThemeName {
-  if (theme === 'modern-minimal' || theme === 'poker-felt' || theme === 'default' || theme === 'lagoon') {
-    return theme;
-  }
-  return 'default';
-}
+import { THEME_STORAGE_KEY, getThemeClass, toTheme, toggleDarkWhiteTheme, type ThemeName } from '../../theme';
 
 export default function GameLayout() {
   const { setName, self, votingOnName, connected, isHydrated, tickets } = useGame();
@@ -28,7 +19,7 @@ export default function GameLayout() {
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [ticketsModalOpen, setTicketsModalOpen] = useState(false);
   const [legendaModalOpen, setLegendaModalOpen] = useState(false);
-  const [theme, setTheme] = useState<ThemeName>('default');
+  const [theme, setTheme] = useState<ThemeName>('dark');
 
   useEffect(() => {
     const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
@@ -41,30 +32,30 @@ export default function GameLayout() {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
-  const themeClass =
-    theme === 'modern-minimal'
-      ? 'theme-modern-minimal'
-      : theme === 'poker-felt'
-        ? 'theme-poker-felt'
-        : theme === 'lagoon'
-          ? 'theme-lagoon'
-        : '';
+  const themeClass = getThemeClass(theme);
+  const handleToggleTheme = () => setTheme((current) => toggleDarkWhiteTheme(current));
 
   const showNicknameModal = connected && !self?.name;
 
   return (
     <div className={`app-shell h-screen flex flex-col overflow-hidden ${themeClass}`}>
       <Header 
-        votingOnName={tickets.length > 0 ? (votingOnName || t('header.noActiveTask')) : undefined}
         onShare={() => setSharingModalOpen(true)}
         onSettings={() => setSettingsModalOpen(true)}
         onTickets={() => setTicketsModalOpen(true)}
         onLegenda={() => setLegendaModalOpen(true)}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
-      <main className="flex-1 min-h-0 pt-12 sm:pt-14 flex items-center justify-center px-2 sm:px-4 overflow-hidden">
+      <main className="flex-1 min-h-0 pt-12 sm:pt-14 flex flex-col items-center justify-center px-2 sm:px-4 overflow-hidden">
+        {tickets.length > 0 && votingOnName && (
+          <span className="ui-panel text-xs sm:text-sm text-[var(--accent)] font-semibold px-3 py-1.5 rounded-full mb-4">
+            Em votação: {votingOnName}
+          </span>
+        )}
         {!isHydrated ? (
-          <div className="w-full max-w-2xl aspect-[4/3] rounded-[58%] border border-slate-600/40 bg-slate-900/45 flex items-center justify-center text-slate-300 animate-pulse">
+          <div className="w-full max-w-2xl aspect-[4/3] rounded-[58%] border border-[var(--surface-border)] bg-[var(--surface-1)] flex items-center justify-center text-[var(--text-primary)] animate-pulse">
             {t('game.loadingRoom')}
           </div>
         ) : (

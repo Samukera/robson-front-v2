@@ -54,8 +54,8 @@ export default function VoteCards({ onVote }: VoteCardsProps) {
                 rounded-[10px] font-bold text-xs sm:text-sm lg:text-base
                 transition-all duration-200 ease-out will-change-transform
                 ${isSelected 
-                  ? 'bg-gradient-to-b from-amber-400 to-amber-600 text-white border border-amber-200/80 z-20 scale-110 shadow-[0_10px_22px_rgba(251,191,36,0.45)]' 
-                  : 'bg-gradient-to-b from-slate-600 to-slate-700 text-slate-100 border border-slate-400/40 shadow-[0_6px_12px_rgba(2,6,23,0.45)] enabled:hover:from-slate-500 enabled:hover:to-slate-600 enabled:hover:border-slate-300/60 enabled:hover:translate-y-[-12px] enabled:hover:scale-110 enabled:hover:z-10 disabled:opacity-40 disabled:cursor-not-allowed'
+                  ? 'bg-gradient-to-b from-[var(--vote-card-active-top)] to-[var(--vote-card-active-bottom)] text-[var(--vote-card-active-text)] border border-[var(--accent-soft)] z-20 scale-110 shadow-[var(--floating-shadow-md)]'
+                  : 'bg-gradient-to-b from-[var(--vote-card-idle-top)] to-[var(--vote-card-idle-bottom)] text-[var(--vote-card-idle-text)] border border-[var(--surface-border)] shadow-[var(--floating-shadow-sm)] enabled:hover:brightness-105 enabled:hover:border-[var(--accent-soft)] enabled:hover:translate-y-[-12px] enabled:hover:scale-110 enabled:hover:z-10 disabled:opacity-40 disabled:cursor-not-allowed'
                 }
               `}
               style={{
@@ -69,7 +69,7 @@ export default function VoteCards({ onVote }: VoteCardsProps) {
         })}
       </div>
       {isObserver && (
-        <div className="absolute right-2 bottom-1 text-[10px] text-slate-300/70">{t('nickname.observerDesc')}</div>
+        <div className="absolute right-2 bottom-1 text-[10px] text-[var(--text-muted)]">{t('nickname.observerDesc')}</div>
       )}
     </div>
   );

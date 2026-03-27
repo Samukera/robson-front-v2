@@ -1,18 +1,28 @@
-import { FiShare2, FiSettings } from 'react-icons/fi';
+import { FiMoon, FiSettings, FiShare2, FiSun } from 'react-icons/fi';
 import { MdOutlineSubtitles } from 'react-icons/md';
 import {FaTasks } from 'react-icons/fa';
 import { useI18n } from '../../context/I18nContext';
+import type { ThemeName } from '../../theme';
 
 interface HeaderProps {
-  votingOnName?: string;
   onShare: () => void;
   onSettings: () => void;
   onTickets?: () => void;
   onLegenda?: () => void;
+  theme: ThemeName;
+  onToggleTheme: () => void;
 }
 
-export default function Header({ votingOnName, onShare, onSettings, onTickets, onLegenda }: HeaderProps) {
+export default function Header({
+  onShare,
+  onSettings,
+  onTickets,
+  onLegenda,
+  theme,
+  onToggleTheme,
+}: HeaderProps) {
   const { t } = useI18n();
+  const isWhiteTheme = theme === 'white';
 
   return (
     <header className="
@@ -47,22 +57,24 @@ export default function Header({ votingOnName, onShare, onSettings, onTickets, o
       </div>
 
       {/* Título - Centro */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
         <h1
           className="leading-none text-[clamp(1.45rem,3vw,2.35rem)]"
-          style={{ fontFamily: 'Nabla, Roboto, sans-serif' }}
+          style={{ fontFamily: 'Nabla, Roboto, sans-serif', color: 'var(--text-primary)' }}
         >
           Robson!
         </h1>
-        {votingOnName && (
-          <span className="text-[10px] sm:text-xs text-amber-300/90 truncate max-w-[120px] sm:max-w-[220px]">
-            {votingOnName}
-          </span>
-        )}
       </div>
 
       {/* Botões - Direita */}
       <div className="w-28 sm:w-36 md:w-44 flex items-center justify-end gap-1 sm:gap-2 ml-auto">
+        <button
+          onClick={onToggleTheme}
+          className="icon-button p-2 rounded-lg"
+          title={isWhiteTheme ? t('settings.themeDark') : t('settings.themeWhite')}
+        >
+          {isWhiteTheme ? <FiMoon size={17} /> : <FiSun size={17} />}
+        </button>
 
         <button
           onClick={onShare}
