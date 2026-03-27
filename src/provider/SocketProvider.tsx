@@ -25,7 +25,7 @@ interface SocketProviderProps {
   roomId: string;
 }
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://127.0.0.1:3001';
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:3001';
 
 export function SocketProvider({ children, roomId }: SocketProviderProps) {
   const socketRef = useRef<Socket | null>(null);
