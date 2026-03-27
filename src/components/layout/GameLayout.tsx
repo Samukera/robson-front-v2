@@ -66,9 +66,13 @@ export default function GameLayout() {
       <footer className="
         app-footer-surface relative z-30 animate-enter-up
         h-20
-        flex items-center justify-center px-2 sm:px-4
+        flex items-center justify-between px-2 sm:px-4
       ">
+        <div className="text-xs sm:text-sm text-[var(--text-muted)]" style={{ fontFamily: 'Quantico, sans-serif' }}>
+          Powered by: SR.C
+        </div>
         <VoteCards />
+        <div className="w-16" />
       </footer>
 
       <SharingModal 

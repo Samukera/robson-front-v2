@@ -21,9 +21,9 @@ function HomeContent() {
   };
 
   return (
-    <div className={`app-shell min-h-screen relative overflow-hidden flex items-center justify-center p-4 ${themeClass}`}>
+    <div className={`app-shell min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-4 ${themeClass}`}>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 pointer-events-none" />
-
+      
       <div className="absolute top-4 right-4 z-10 flex items-center gap-2 ui-panel rounded-lg p-1">
         <button
           type="button"
@@ -41,23 +41,29 @@ function HomeContent() {
         </button>
       </div>
 
-      <div className="relative text-center w-full max-w-xl">
-        <h1
-          className="mb-5 leading-none text-[clamp(3rem,14vw,7.25rem)]"
-          style={{ fontFamily: 'Nabla, Roboto, sans-serif' }}
-        >
-          Robson!
-        </h1>
-        <p className="text-[var(--text-primary)] text-base sm:text-lg mb-3">{t('home.subtitle')}</p>
-        <p className="text-[var(--text-muted)] text-sm sm:text-base leading-relaxed mb-8 px-2">
-          {t('home.description')}
-        </p>
-        
-        <PokerChipButton 
-          label={t('home.createRoom')} 
-          onClick={handleCreateRoom} 
-        />
+      <div className="flex-1 flex items-center justify-center w-full">
+        <div className="relative text-center w-full max-w-xl">
+          <h1
+            className="mb-5 leading-none text-[clamp(3rem,14vw,7.25rem)]"
+            style={{ fontFamily: 'Nabla, Roboto, sans-serif' }}
+          >
+            Robson!
+          </h1>
+          <p className="text-[var(--text-primary)] text-base sm:text-lg mb-3">{t('home.subtitle')}</p>
+          <p className="text-[var(--text-muted)] text-sm sm:text-base leading-relaxed mb-8 px-2">
+            {t('home.description')}
+          </p>
+          
+          <PokerChipButton 
+            label={t('home.createRoom')} 
+            onClick={handleCreateRoom} 
+          />
+        </div>
       </div>
+
+      <footer className="text-xs sm:text-sm text-[var(--text-muted)] py-4" style={{ fontFamily: 'Quantico, sans-serif' }}>
+        Powered by: SR.C
+      </footer>
     </div>
   );
 }
